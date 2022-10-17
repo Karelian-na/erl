@@ -1,0 +1,14 @@
+server:
+    port: 8181
+spring:
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/electronicresourcelibrary?serverTimeZone=UTC
+        username: erl_user
+        password: 12345678
+    main:
+        banner-mode: off
+mybatis-plus:
+    mapper-locations: classpath*:/mapper/**Mapper.xml
+    global-config:
+        banner: false
