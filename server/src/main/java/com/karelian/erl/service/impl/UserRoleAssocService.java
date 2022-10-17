@@ -29,9 +29,19 @@ public class UserRoleAssocService extends ServiceImpl<UserRoleAssocMapper, UserR
 	@Override
 	public List<Byte> getRoles(long uid) {
 		LambdaQueryWrapper<UserRoleAssoc> lqw = new LambdaQueryWrapper<UserRoleAssoc>();
-		lqw.select(UserRoleAssoc.class, i -> i.getProperty().equals("rid"))
-				.eq(UserRoleAssoc::getUid, uid);
+		lqw.select(UserRoleAssoc::getRid).eq(UserRoleAssoc::getUid, uid);
 		return this.baseMapper.selectObjs(lqw).stream().map(obj -> (byte)((Integer)obj).intValue()).collect(Collectors.toList());
 	}
 
+	@Override
+	public boolean saveBatch(Long uid, List<Byte> rids) {
+		List<UserRoleAssoc> datas = new ArrayList<>();
+		for (Byte rid : rids) {
+			UserRoleAssoc ura = new UserRoleAssoc();
+			ura.setUid(uid);
+			ura.setRid(rid);
+			datas.add(ura);
+		}
+		return this.baseMapper.saveBatch(datas);
+	}
 }

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2022-10-16
  */
 @RestController
-@RequestMapping("/user-role-assoc")
 public class UserRoleAssocController extends BaseController {
 
 }

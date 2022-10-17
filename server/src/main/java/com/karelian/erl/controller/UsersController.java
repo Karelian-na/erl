@@ -37,6 +37,8 @@ import com.karelian.erl.service.impl.UsersService;
 public class UsersController extends BaseController {
 	@Autowired
 	private UsersService usersService;
+	@Autowired
+	private UserRoleAssocService userRoleAssocService;
 
 	@DeleteMapping("/delete")
 	public Result deleteUser(@RequestParam long id) throws Exception {
@@ -175,5 +177,13 @@ public class UsersController extends BaseController {
 		user.setId(uid);
 		user.setPwd(hashPwd);
 		return new Result(usersService.updateById(user));
+	}
+
+	@PostMapping("assign")
+	public Result asign(@RequestParam("uid") Long uid, @RequestParam("rids") List<Byte> rids) throws Exception {
+		if (super.canAccess()) {
+			return new Result(userRoleAssocService.saveBatch(uid, rids));
+		}
+		return Result.PermissionNotAllowed;
 	}
 }

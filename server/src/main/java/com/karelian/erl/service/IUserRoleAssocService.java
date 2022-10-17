@@ -19,4 +19,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IUserRoleAssocService extends IService<UserRoleAssoc> {
 	public List<Byte> getRoles(long uid);
+
+	public boolean saveBatch(Long uid, List<Byte> rids);
 }

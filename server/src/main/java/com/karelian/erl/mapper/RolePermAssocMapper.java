@@ -9,8 +9,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author baomidou
- * @since 2022-10-16
+ * @since 2022-10-16s
  */
 public interface RolePermAssocMapper extends BaseMapper<RolePermAssoc> {
+    boolean insertByUnionKey(Byte rid, Integer pid);
 
+    boolean deleteByUnionKey(Byte rid, Integer pid);
 }
