@@ -1,5 +1,10 @@
 server:
     port: 8181
+    error:
+        path: /error
+    servlet:
+        session:
+            timeout: 3600
 spring:
     datasource:
         driver-class-name: com.mysql.cj.jdbc.Driver
@@ -8,7 +13,31 @@ spring:
         password: 12345678
     main:
         banner-mode: off
+    servlet:
+        multipart:
+            max-file-size: 50MB
+            max-request-size: 100MB
+    mail:
+        host: smtp.karelian.cn
+        port: 465
+        username: security@karelian.cn
+        password: Karelian62501Lxq
+        default-encoding: UTF-8
+        protocol: smtps
+        properties:
+            mail.smtp.auth: true
+            mail.smtp.connectiontimeout: 500
+            mail.smtp.timeout: 1000
+            mail.smtp.writetimeout: 1000
+            mail.smtp.ssl.enable: true
 mybatis-plus:
-    mapper-locations: classpath*:/mapper/**Mapper.xml
+    mapper-locations: classpath:/mappers/*.xml
     global-config:
         banner: false
+        db-config:
+            logic-delete-field: flag
+            logic-delete-value: 1
+            logic-not-delete-value: 0
+    configuration:
+        map-underscore-to-camel-case: false
+        log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

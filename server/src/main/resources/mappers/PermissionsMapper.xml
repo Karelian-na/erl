@@ -1,4 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.erl.mapper.PermissionsMapper">
+<mapper namespace="cn.karelian.erl.mapper.PermissionsMapper">
+	<sql id="authorizedPids">
+		SELECT DISTINCT pid AS aid
+		FROM users
+		JOIN user_role_assoc ON users.id = user_role_assoc.uid
+		JOIN role_perm_assoc ON user_role_assoc.rid = role_perm_assoc.rid
+		WHERE
+			users.id = #{uid} AND NOT EXISTS (
+				SELECT *
+				FROM user_perm_assoc
+				WHERE
+					user_perm_assoc.uid = #{uid} AND 
+					authorize = 0 AND 
+					user_perm_assoc.pid = role_perm_assoc.pid
+			)
+		UNION 
+			SELECT pid AS aid
+			FROM user_perm_assoc
+			WHERE 
+				user_perm_assoc.uid = #{uid} AND 
+				authorize = 1
+	</sql>
+	<select id="getAuthorizedPermissions" resultType="java.util.Map">
+		SELECT id, name, pid, type
+		FROM (
+			<include refid="authorizedPids"></include>
+		) AS temp
+		JOIN permissions ON temp.aid = permissions.id
+		WHERE
+			status = 1
+		ORDER BY pid ASC, type ASC
+	</select>
+	<select id="getAuthorizedMenu" resultType="cn.karelian.erl.entity.Permissions">
+		SELECT id, name, pid, url, type, icon
+		FROM (
+			<include refid="authorizedPids"></include>
+		) AS temp
+		JOIN permissions ON temp.aid = permissions.id
+		WHERE
+			status = 1 AND 
+			type &lt;= 3
+		ORDER BY pid ASC, type ASC
+	</select>
+	<select id="getAuthorizedBrotherPages" resultType="cn.karelian.erl.entity.Permissions">
+		SELECT id, url, name
+		FROM (
+			<include refid="authorizedPids"></include>
+		) AS temp
+		JOIN permissions ON temp.aid = permissions.id
+		WHERE 
+			type = 3 AND 
+			status = 1 AND 
+			permissions.pid = #{pid}
+	</select>
+	<select id="getAuthorizedOperationPermissions" resultType="cn.karelian.erl.entity.Permissions" parameterType="cn.karelian.erl.entity.Permissions">
+		SELECT icon, name, url, oper_type
+		FROM (
+			<include refid="authorizedPids"></include>
+		) AS temp
+		JOIN permissions ON temp.aid = permissions.id
+		WHERE 
+			type = 4 AND
+			oper_type is not null AND
+			status = 1 AND
+			(permissions.pid = #{permission.id} OR 
+			permissions.pid = #{permission.pid})
+	</select>
 </mapper>

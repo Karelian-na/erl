@@ -1,9 +1,18 @@
+/** @format */
+
 import { createApp } from "vue";
 import ElementPlus from "element-plus";
-import 'element-plus/dist/index.css';
-import Index from "./views/login/index.vue";
+import axios from "axios";
+import "element-plus/dist/index.css";
+import App from "./App.vue";
 
-const app = createApp(Index);
+const app = createApp(App);
 
-app.use(ElementPlus);
+axios.defaults.baseURL = "http://erl.wust.edu.cn:8181/";
+axios.defaults.withCredentials = true;
+
+import { router } from "./router/index.js";
+
+app.use(router);
+
 app.mount("#app");
